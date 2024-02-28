@@ -1,0 +1,1 @@
+See miniproject_2024.pdf for information about the task.
