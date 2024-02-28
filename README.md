@@ -1,2 +1,2 @@
-# university
-Significant courses of Master's study at AAU.
+# High Performance Computing (HPC)
+*8th semester course in AAU Master's program for AI, Vision and Sound.*
