@@ -2,9 +2,9 @@ import multiprocessing as mp
 import random
 import time
 import matplotlib.pyplot as plt
+from dask.distributed import Client 
 
-
-def icircle(L):
+def icircle(L, b):
   """Counts the number of (x, y) pairs inside the unit circle."""
   random.seed()  # Seed within the function for parallel execution
   M = sum(1 for _ in range(L) if random.random()**2 + random.random()**2 < 1)
@@ -13,12 +13,13 @@ def icircle(L):
 
 def parpi(M, L, N):
   """Estimates pi using parallel execution and measures time."""
-  pool = mp.Pool(processes=M)
+  client = Client(n_workers=M)
   start_time = time.time()
-  results = [pool.apply_async(icircle, args=(L,)) for _ in range(N)]
-  M_total = sum(result.get() for result in results)
+  counts = client.map( icircle, [L]*N, range(N))
+  M_total = client.submit(sum,counts)
   end_time = time.time()
-  piest = 4 * M_total / (N * L)
+  piest = 4 * M_total.result() / (N * L)
+  client.close()
   return piest, end_time - start_time
 
 
